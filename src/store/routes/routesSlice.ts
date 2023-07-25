@@ -1,11 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import uniqid from 'uniqid'
-import { Route } from './routes'
+import { Point, Route } from './routes'
 
 export interface RoutesState {
     currentRouteId: string | null
     routes: Route[]
+    isLoading: boolean
+    isError: boolean
 }
 
 const initialState: RoutesState = {
@@ -28,6 +30,7 @@ const initialState: RoutesState = {
                     lng: 30.38064206,
                 },
             ],
+            polylineEncodedData: null,
         },
         {
             id: uniqid(),
@@ -46,6 +49,7 @@ const initialState: RoutesState = {
                     lng: 30.29496392,
                 },
             ],
+            polylineEncodedData: null,
         },
         {
             id: uniqid(),
@@ -64,8 +68,11 @@ const initialState: RoutesState = {
                     lng: 30.41705607,
                 },
             ],
+            polylineEncodedData: null,
         },
     ],
+    isLoading: false,
+    isError: false,
 }
 
 export const routesSlice = createSlice({
@@ -78,8 +85,33 @@ export const routesSlice = createSlice({
         setCurrentRoute: (state, action: PayloadAction<string>) => {
             state.currentRouteId = action.payload
         },
+        fetchPolylineDataStart: (state, action: PayloadAction<{ id: string; points: Point[] }>) => {
+            state.isLoading = true
+            state.isError = false
+        },
+        fetchPolylineDataSuccess: (
+            state,
+            action: PayloadAction<{ id: string; polyline: string }>
+        ) => {
+            state.routes = state.routes.map((route) =>
+                route.id === action.payload.id
+                    ? { ...route, polylineEncodedData: action.payload.polyline }
+                    : route
+            )
+            state.isLoading = false
+        },
+        fetchPolylineDataError: (state) => {
+            state.isLoading = false
+            state.isError = true
+        },
     },
 })
 
-export const { removeRoute, setCurrentRoute } = routesSlice.actions
+export const {
+    removeRoute,
+    setCurrentRoute,
+    fetchPolylineDataStart,
+    fetchPolylineDataSuccess,
+    fetchPolylineDataError,
+} = routesSlice.actions
 export const routesReducer = routesSlice.reducer
