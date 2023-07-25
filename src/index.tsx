@@ -1,6 +1,12 @@
 import './styles.css'
 import ReactDOM from 'react-dom/client'
 import Layout from './view/Layout/Layout'
+import { store } from './store/store'
+import { Provider } from 'react-redux'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
-root.render(<Layout />)
+root.render(
+    <Provider store={store}>
+        <Layout />
+    </Provider>
+)
