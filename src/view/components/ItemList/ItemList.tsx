@@ -1,10 +1,20 @@
+import { useTypedSelector } from '../../../store/hooks'
 import Item from '../Item/Item'
 import styles from './ItemList.module.css'
 
-const ItemList = () => {
+const ItemList = (): JSX.Element => {
+    const { routes } = useTypedSelector((store) => store.routes)
+
     return (
         <div className={styles.ItemList}>
-            <Item name="Маршрут 1" body="59.221 38.356" />
+            {routes.map((route) => (
+                <Item
+                    key={route.id}
+                    id={route.id}
+                    name={route.name}
+                    body={`${route.points[0].lat} ${route.points[0].lng}`}
+                />
+            ))}
         </div>
     )
 }

@@ -4,10 +4,12 @@ import uniqid from 'uniqid'
 import { Route } from './routes'
 
 export interface RoutesState {
+    currentRoute: string | null
     routes: Route[]
 }
 
 const initialState: RoutesState = {
+    currentRoute: null,
     routes: [
         {
             id: uniqid(),
@@ -70,11 +72,14 @@ export const routesSlice = createSlice({
     name: 'routes',
     initialState,
     reducers: {
-        remove: (state, action: PayloadAction<string>) => {
+        removeRoute: (state, action: PayloadAction<string>) => {
             state.routes = state.routes.filter((route) => route.id !== action.payload)
+        },
+        setCurrentRoute: (state, action: PayloadAction<string>) => {
+            state.currentRoute = action.payload
         },
     },
 })
 
-export const { remove } = routesSlice.actions
+export const { removeRoute, setCurrentRoute } = routesSlice.actions
 export const routesReducer = routesSlice.reducer
