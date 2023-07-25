@@ -17,6 +17,12 @@
     height: 100%;
 }
 
+.Header {
+    width: 100%;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
 .Content {
     display: flex;
     flex-direction: column;

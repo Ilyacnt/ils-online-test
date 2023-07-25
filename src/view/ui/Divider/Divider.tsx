@@ -1,6 +1,6 @@
 import styles from './Divider.module.css'
 
-const Divider = () => {
+const Divider = (): JSX.Element => {
     return <div className={styles.Divider}></div>
 }
 

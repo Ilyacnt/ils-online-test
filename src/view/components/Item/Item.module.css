@@ -1,0 +1,38 @@
+.Item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 10px;
+    width: 100%;
+}
+
+.Item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.Item:active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.Head {
+    display: flex;
+    gap: 5px;
+}
+
+.Body {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 25px;
+    width: 100%;
+}
+
+.Body span {
+    opacity: 0.6;
+}
+
+.Selected {
+    border: 2px solid var(--primary-color);
+}
