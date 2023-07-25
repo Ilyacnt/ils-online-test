@@ -1,10 +1,14 @@
+// @ts-nocheck
 import styles from './Map.module.css'
 import 'leaflet/dist/leaflet.css'
 import L, { LatLngTuple } from 'leaflet'
+// @ts-ignore
+import polylineEncoded from 'polyline-encoded'
 import { useTypedSelector } from '../../../store/hooks'
 import { useCallback, useEffect, useRef } from 'react'
 import { Route } from '../../../store/routes/routes'
 import MarkerPinIconUrl from '../../assets/marker-pin-icon.png'
+import { fetchPolylines } from '../../../http-service/fetchPolylines'
 
 const MarkerPinIcon = L.icon({
     iconUrl: MarkerPinIconUrl,
@@ -19,6 +23,7 @@ const Map = (): JSX.Element => {
     const mapContainerRef = useRef<HTMLDivElement>(null)
     const mapRef = useRef<L.Map | null>(null)
     const markersLayerRef = useRef<L.LayerGroup | null>(null)
+    const polylineRef = useRef<L.Polyline | null>(null)
 
     const getCurrentRoute = useCallback((): Route => {
         return routes.filter((route) => route.id === currentRouteId)[0]
@@ -30,16 +35,7 @@ const Map = (): JSX.Element => {
             12
         )
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapRef.current)
-
         markersLayerRef.current = L.layerGroup()
-
-        // Отображаем маршрут и его полилинию на карте, если она есть
-        // if (selectedRoutePolyline) {
-        //     const decodedPolyline = L.Polyline.fromEncoded(selectedRoutePolyline)
-        //     decodedPolyline.addTo(map)
-        //     map.fitBounds(decodedPolyline.getBounds())
-        // }
-
         return () => {
             mapRef.current && mapRef.current.remove()
         }
@@ -48,20 +44,40 @@ const Map = (): JSX.Element => {
     useEffect(() => {
         let currentRoute = getCurrentRoute()
         if (currentRoute && mapRef.current && markersLayerRef.current) {
-            const bounds = L.latLngBounds(
-                currentRoute.points.map((point) => [point.lat, point.lng])
-            )
+            let decodedPolyline = ''
+            // REPLACE WITH SAGA
 
-            mapRef.current.fitBounds(bounds)
+            new Promise((resolve) => {
+                const data = fetchPolylines(currentRoute.points)
+                resolve(data)
+            }).then((data) => {
+                decodedPolyline = polylineEncoded.decode(data)
+                if (polylineRef.current && mapRef.current && mapRef.current) {
+                    mapRef.current.removeLayer(polylineRef.current)
+                }
+                // @ts-ignore
+                polylineRef.current = new L.polyline(decodedPolyline as LatLngTuple[], {
+                    color: '#3B8AFF',
+                    weight: 4,
+                })
 
-            markersLayerRef.current.clearLayers()
+                polylineRef.current && polylineRef.current.addTo(mapRef.current)
 
-            currentRoute.points.forEach((point) => {
-                let markerPin = L.marker([point.lat, point.lng], { icon: MarkerPinIcon })
-                markersLayerRef.current?.addLayer(markerPin)
+                const bounds = L.latLngBounds(
+                    currentRoute.points.map((point) => [point.lat, point.lng])
+                )
+
+                mapRef.current.fitBounds(bounds)
+
+                markersLayerRef.current.clearLayers()
+
+                currentRoute.points.forEach((point) => {
+                    let markerPin = L.marker([point.lat, point.lng], { icon: MarkerPinIcon })
+                    markersLayerRef.current?.addLayer(markerPin)
+                })
+
+                markersLayerRef.current.addTo(mapRef.current)
             })
-
-            markersLayerRef.current.addTo(mapRef.current)
         }
     }, [currentRouteId, getCurrentRoute])
 
