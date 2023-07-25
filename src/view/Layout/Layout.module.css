@@ -36,7 +36,12 @@
 
 @media (max-width: 800px) {
     .Layout {
-        grid-template-rows: 300px 1fr;
+        grid-template-rows: 320px 1fr;
         grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .Content {
+        padding: 0;
     }
 }

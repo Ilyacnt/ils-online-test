@@ -34,5 +34,5 @@
 }
 
 .Selected {
-    outline: 2px solid var(--primary-color);
+    box-shadow: inset 0 0 0 2px var(--primary-color);
 }
