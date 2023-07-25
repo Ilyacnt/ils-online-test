@@ -18,3 +18,7 @@ body {
     background: linear-gradient(180deg, #343434 0%, #38354e 99.99%, #35424f 100%);
     height: 100vh;
 }
+
+#root {
+    height: 100%;
+}
