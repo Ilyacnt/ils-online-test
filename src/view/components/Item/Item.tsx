@@ -14,12 +14,12 @@ interface ItemProps {
 }
 
 const Item = ({ id, name, body }: ItemProps): JSX.Element => {
-    const { currentRoute } = useTypedSelector((state) => state.routes)
+    const { currentRouteId } = useTypedSelector((state) => state.routes)
     const dispatch = useTypedDispatch()
 
     return (
         <div
-            className={cn(styles.Item, { [styles.Selected]: currentRoute === id })}
+            className={cn(styles.Item, { [styles.Selected]: currentRouteId === id })}
             onClick={() => dispatch(setCurrentRoute(id))}
         >
             <div className={styles.Head}>

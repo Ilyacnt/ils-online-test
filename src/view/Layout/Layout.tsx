@@ -1,4 +1,5 @@
 import ItemList from '../components/ItemList/ItemList'
+import Map from '../components/Map/Map'
 import Divider from '../ui/Divider/Divider'
 import styles from './Layout.module.css'
 
@@ -10,7 +11,9 @@ const Layout = (): JSX.Element => {
                 <Divider />
                 <ItemList />
             </div>
-            <div className={styles.Content}>Content</div>
+            <div className={styles.Content}>
+                <Map />
+            </div>
         </div>
     )
 }
